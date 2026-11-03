@@ -1,0 +1,48 @@
+& {
+    $ErrorActionPreference = 'Stop'
+    $bootDrive = 'D:\'
+    $originalHash = 'fc981e3f87a0cc4ae1c9e6d774d02bbbaf4c225b8cd3ff7d30194c837ee3517e'
+    $repairHash = '992ae12ab7642978a1a246d77644bf5bf5dfea511191902b31028a864b4f3884'
+    $newBootHash = 'bd5a0faf8839c11fcb79c9f56178bb0d216b89871aa3cba49af97242cb7405c1'
+    $repairFile = Join-Path $bootDrive 'robot-wifi-reconnect.py'
+    $backupFile = Join-Path $bootDrive 'cmdline-original.txt'
+    $bootFile = Join-Path $bootDrive 'cmdline.txt'
+
+    if ((Get-FileHash -LiteralPath $repairFile).Hash -ne $repairHash) {
+        throw 'Copy robot-wifi-reconnect.py from this ZIP into bootfs (D:) first.'
+    }
+    if ((Get-FileHash -LiteralPath $backupFile).Hash -ne $originalHash) {
+        throw 'Original backup does not match. Stop and send this error.'
+    }
+    if ((Get-FileHash -LiteralPath $bootFile).Hash -ne $originalHash) {
+        throw 'The original boot command is not restored. Stop and send this error.'
+    }
+
+    $wifiName = Read-Host 'Hotspot name - press Enter to use Saikiran'
+    if ([string]::IsNullOrEmpty($wifiName)) { $wifiName = 'Saikiran' }
+    if ([Text.Encoding]::UTF8.GetByteCount($wifiName) -gt 32 -or $wifiName -match "[`r`n`0]") {
+        throw 'Invalid hotspot name.'
+    }
+    $secureWifiPassword = Read-Host 'Enter your CURRENT hotspot password (hidden)' -AsSecureString
+    $wifiPassword = [System.Net.NetworkCredential]::new('', $secureWifiPassword).Password
+    $byteCount = [Text.Encoding]::UTF8.GetByteCount($wifiPassword)
+    if ((($byteCount -lt 8 -or $byteCount -gt 63) -and $wifiPassword -notmatch '^[0-9a-fA-F]{64}$') -or $wifiPassword -match "[`r`n`0]") {
+        throw 'Password must be 8-63 bytes, or a 64-character hexadecimal key.'
+    }
+    $settingsJson = @{ssid=$wifiName; password=$wifiPassword} | ConvertTo-Json -Compress
+    $settingsFile = Join-Path $bootDrive 'robot-wifi-settings.json'
+    [IO.File]::WriteAllText($settingsFile, $settingsJson, [Text.UTF8Encoding]::new($false))
+    $wifiPassword = $null
+    $settingsJson = $null
+    $secureWifiPassword.Dispose()
+
+    $bootOptions = ' systemd.run="/usr/bin/timeout --signal=TERM --kill-after=5s 210s /usr/bin/python3 /boot/firmware/robot-wifi-reconnect.py" systemd.run_success_action=reboot systemd.run_failure_action=poweroff systemd.unit=kernel-command-line.target'
+    $newBootText = [IO.File]::ReadAllText($backupFile).TrimEnd([char[]]"`r`n") + $bootOptions + "`n"
+    [IO.File]::WriteAllText($bootFile, $newBootText, [Text.Encoding]::ASCII)
+    if ((Get-FileHash -LiteralPath $bootFile).Hash -ne $newBootHash) {
+        Copy-Item -LiteralPath $backupFile -Destination $bootFile -Force
+        Remove-Item -LiteralPath $settingsFile -Force
+        throw 'Boot-file verification failed. Original restored; send this error.'
+    }
+    Write-Host 'READY - Wi-Fi repair prepared. Safely eject the card and start the Pi.' -ForegroundColor Green
+}

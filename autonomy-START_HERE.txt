@@ -1,0 +1,131 @@
+AUTOMATIC INSPECTION — FIRST FLOOR PROTOTYPE
+Sai's Raspberry Pi / ESP32 / HC-SR04 / ESP32-CAM robot
+
+WHAT THIS VERSION DOES
+After you press Start, it checks the camera, crack service and distance sensor.
+In drive mode it takes short forward steps, stops to recheck distance, stops
+around the configured 40 cm distance, takes one photograph, runs the existing
+crack detector and stays stopped. It never starts movement on boot or page load.
+
+The default is a stationary test: no forward command is sent.
+This is NOT wall climbing, wall following, a room survey or full-wall coverage.
+Keep the suction pump independent; this program controls only the wheel ESP32.
+
+USES YOUR EXISTING FILES
+  /home/sai/robot_web_distance.py  — imports its DistanceReader, not its server
+  /home/sai/crack_inspector.py    — existing scan service on port 5001
+  /home/sai/crack_model.onnx      — existing detector model
+Existing wiring: Pi BCM23 TRIG / physical pin 16; divided BCM24 ECHO / pin 18.
+Do not move the sensor to ESP32 pins for this software.
+The existing wheel firmware must still accept f/s at 115200, reply STOP,
+and stop when commands cease for 300 ms. Do not disable its timeout.
+
+1. COPY THE NEW FILE FROM WINDOWS
+Download robot-autonomy.zip into your laptop's Downloads folder.
+In a WINDOWS POWERSHELL tab (prompt starts PS C:\...), run these separately:
+
+Expand-Archive "$env:USERPROFILE\Downloads\robot-autonomy.zip" -DestinationPath "$env:USERPROFILE\Downloads\robot-autonomy" -Force
+
+scp "$env:USERPROFILE\Downloads\robot-autonomy\robot_autonomy.py" sai@10.143.244.45:/home/sai/
+
+This adds one new script. It does not replace your existing two apps.
+
+2. START THE CRACK SERVICE ON THE PI
+Connect using: ssh sai@10.143.244.45
+If the crack app is already running in that terminal, press Ctrl+C first.
+At the sai@robot:~ $ prompt, run:
+
+/home/sai/robot-ai/bin/python /home/sai/crack_inspector.py --camera http://10.143.244.58/capture
+
+Leave this terminal open. Wait for READY.
+
+3. STATIONARY TEST — MOTOR POWER OFF
+Leave the ESP32 connected by USB to the powered Pi, but turn off wheel motor
+power. Point the camera AND front distance sensor toward a broad, well-lit wall.
+In the terminal running robot_web_distance.py, press Ctrl+C to stop it.
+It must be stopped: the two controllers cannot share the motor USB or GPIO.
+If necessary open another PowerShell tab and SSH into the Pi again.
+At the Pi prompt run:
+
+/usr/bin/python3 /home/sai/robot_autonomy.py
+
+Open http://10.143.244.45:5002 on the same hotspot.
+It must say STATIONARY TEST — movement disabled.
+Press "Test sensor + camera + crack detection". Keep the page visible.
+Expect a fresh distance and one marked photograph or a clear error message.
+The test must finish successfully before a powered movement trial.
+
+4. POWERED TEST AND ONE APPROACH
+First secure the robot with its wheels clear of the ground. Turn on wheel
+motor power. Stop the stationary-test app with Ctrl+C, then run:
+
+/usr/bin/python3 /home/sai/robot_autonomy.py --drive
+
+Open/refresh http://10.143.244.45:5002.
+Check that the displayed distance changes correctly when a broad target moves.
+Use a supported test arrangement to verify forward rotation, STOP and stopping
+when the control connection is lost. Do not claim these tests passed from
+the software test results alone. If the wheels fail to stop, cut motor power
+and fix the firmware/connection before continuing.
+
+For the first floor run, put the robot facing a broad flat wall about 40–60 cm
+from the front sensor, on a clear level floor away from edges or stairs.
+The camera must actually see the wall, not only the floor.
+Tick the floor-setup box and press "Start one inspection". Stay nearby.
+Keep the phone browser open and visible; do not switch apps during the cycle.
+It should approach, stop, scan once and remain stopped. It will not turn or
+reverse, so reposition it yourself for the next inspection location.
+
+The motors use their existing normal forward power — there is no speed command
+in the known firmware. Each requested step is 60 ms, followed by STOP and fresh
+sensor checks. Mechanical stopping distance is NOT validated. The 300 ms
+firmware timeout is the fallback if a stop packet or host process fails.
+Do not reduce the 40 cm threshold without measuring clearance and stopping.
+
+LIMITS AND STOP CONDITIONS
+* Stop button, leaving the page, or browser heartbeat expiry ends the cycle.
+  The server lease is 1.2 seconds; each movement step is separately bounded.
+* Missing/invalid/stale/unstable distance, serial errors, missing STOP reply,
+  camera failure, or model-service failure end the cycle without restarting.
+* Drive mode refuses readings below 25 cm or above 120 cm.
+* The approach is limited to 20 steps and a 25-second approach deadline.
+  If the target distance is not reached, it stops without scanning.
+* A front ultrasonic sensor does not cover sides, rear, floor drops, or every
+  thin/angled obstacle. This is a supervised single-wall prototype.
+* STOP cannot cancel an inference already running inside the crack service;
+  that service may finish saving an image, but motion does not resume.
+* The model marks suspected visible cracks. It can miss cracks or mark shadows
+  and joints. A score is not a calibrated probability or a safety assessment.
+
+RESULTS
+Photographs, marked images, masks and scan data: /home/sai/crack_results
+Cycle logs: /home/sai/robot_auto_runs
+The automatic page links to the marked image, original image and scan JSON.
+
+RETURN TO MANUAL CONTROLS
+Press STOP, then Ctrl+C in the automatic app terminal. Run:
+
+/usr/bin/python3 /home/sai/robot_web_distance.py
+
+Open http://10.143.244.45:5000. The crack app can remain on port 5001.
+
+IF SOMETHING FAILS
+Send the full Pi terminal error and the message on the automatic page.
+Do not run both robot control servers simultaneously. Do not bypass the
+STOP-reply check or change GPIO pins to make an error disappear.
+If the hotspot changes IP addresses again, use the Pi's new address in the
+browser and pass --camera http://NEW_CAMERA_IP to robot_autonomy.py, and
+--camera http://NEW_CAMERA_IP/capture to crack_inspector.py.
+
+VALIDATION
+24 simulated tests passed; both browser interface modes passed JavaScript
+syntax checks.
+Checked locally with simulated motors/sensors and the saved crack service's
+actual Flask route factory. No physical robot, real model inference, wall
+adhesion or stopping-distance test was performed here.
+The saved baseline is the Oct 5 distance app and Sep 30 crack app. If your
+copies have changed beyond their camera IP, an integration check may be needed.
+
+Implementation references:
+https://pyserial.readthedocs.io/en/latest/pyserial_api.html
+https://flask.palletsprojects.com/en/stable/testing/

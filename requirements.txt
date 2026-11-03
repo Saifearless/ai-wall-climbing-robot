@@ -1,0 +1,9 @@
+# Python dependencies inferred from the saved source imports.
+# Intended for the Raspberry Pi environment; lgpio is Linux GPIO-specific.
+# Versions are not pinned because the working Pi package versions were not retrieved.
+Flask
+pyserial
+lgpio
+numpy
+opencv-python-headless
+onnxruntime

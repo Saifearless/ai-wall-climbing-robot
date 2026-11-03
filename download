@@ -1,0 +1,31 @@
+# Python environments and generated caches
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+robot-ai/
+
+# Local credentials and configuration
+.env
+.env.*
+!.env.example
+secrets.*
+credentials.*
+robot-wifi-settings.json
+*.nmconnection
+*.pem
+*.key
+
+# Model weights and robot-generated results
+*.onnx
+*.pt
+*.pth
+inspection_photos/
+crack_results/
+robot_auto_runs/
+*.log
+PI-WIFI-*.txt
+
+# Operating system metadata
+.DS_Store
+Thumbs.db

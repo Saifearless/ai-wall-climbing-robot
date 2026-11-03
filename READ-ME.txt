@@ -1,0 +1,81 @@
+RASPBERRY PI WI-FI REPAIR
+Prepared for your Raspberry Pi 4 / Debian Trixie report, 30 September 2026.
+
+WHAT THE REPORT SHOWED
+- The Pi booted far enough to run the diagnostic.
+- Its Wi-Fi adapter detected nearby networks, including Saikiran at signal 100.
+- NetworkManager listed no saved Wi-Fi connection.
+- throttled=0x0: no undervoltage/throttling flags were set during that check.
+- The diagnostic restored your original cmdline.txt and then shut down.
+- NetworkManager being inactive before the check started it is not proof of
+  a normal-startup fault: that was a special diagnostic boot.
+
+WINDOWS LAPTOP STEPS
+1. Download this ZIP, right-click it, and choose Extract All.
+   Open the extracted pi-wifi-repair folder. Do not run inside the ZIP.
+2. Disconnect Pi power. Put its microSD card into your laptop card reader.
+   Open This PC and note the bootfs drive letter, for example F:.
+   It is the drive containing cmdline.txt and config.txt.
+   If Windows asks to format another partition, cancel that request.
+3. Double-click START.cmd in the extracted folder.
+4. Enter the bootfs drive letter. Enter the exact Wi-Fi name and its password.
+   Pressing Enter at the Wi-Fi-name prompt selects Saikiran; choose your own
+   network if that is not the network you want. The password is hidden as typed.
+   Use a WPA2-Personal network, matching the networks in your report.
+5. Wait until the window says READY. Safely eject the card and insert it in
+   the Pi. Keep that Wi-Fi/hotspot turned on and near the Pi.
+6. Leave robot motor power disconnected. Power the Pi and wait 4 minutes.
+   This one repair boot saves the profile, tests it, writes PI-WIFI-FIX.txt,
+   restores normal startup, and shuts down. The red light may remain on.
+7. Unplug Pi power, wait 5 seconds, then reconnect it. Wait 2 minutes.
+   Look for robot in your hotspot/router's connected-device list. It may be
+   listed by Wi-Fi MAC address d8:3a:dd:17:bf:68 instead.
+
+IF IT STILL DOES NOT CONNECT
+The repair report is PI-WIFI-FIX.txt on bootfs. To read it without starting
+another normal boot, return the SD card to your laptop after step 6 and after
+disconnecting power. Share that report for diagnosis.
+If you already completed step 7, shut down the Pi cleanly if you can access
+its terminal. Otherwise allow the full boot time and wait until SD activity
+has stopped before disconnecting power and removing the card; an abrupt
+power cut can corrupt the card. Never remove the card while powered.
+
+If START.cmd reports a special boot already configured, stop and share
+cmdline.txt. Do not delete it or append repair commands manually.
+If no repair report appears, share a screenshot of the bootfs file list.
+
+HOW TO CANCEL BEFORE BOOTING
+With the card in Windows, copy cmdline-before-wifi-repair.txt over cmdline.txt,
+keeping the destination name exactly cmdline.txt. Delete only
+robot-wifi-settings.json to remove the temporary password copy.
+
+WHAT THIS PACKAGE CHANGES
+On Windows it backs up cmdline.txt, copies two repair scripts and a temporary
+settings file to bootfs, then appends a one-time systemd repair command.
+On the Pi it verifies the backup and restores cmdline.txt before making any
+network change. It creates its own root-only saved connection at:
+  /etc/NetworkManager/system-connections/robot-wifi-repair.nmconnection
+It starts/enables NetworkManager, enables Wi-Fi and tests the new profile.
+Existing robot programs, user accounts, SSH settings and other saved network
+profiles are not edited. No formatting or OS reinstall is performed.
+Repeating setup updates only this package's own saved Wi-Fi profile.
+This package is intended for the Pi/card shown in the supplied report.
+
+PASSWORD HANDLING
+Enter your Wi-Fi password on your laptop; you do not need to send it in chat.
+robot-wifi-settings.json temporarily contains the password on the SD card.
+The Pi deletes that transfer file after installing its saved profile. Deletion
+is not secure erasure. Do not share the settings file or the entire SD card.
+PI-WIFI-FIX.txt contains connection status and local addresses, not passwords.
+The WPA2 key is saved with root-only permissions on the Pi, as needed for
+automatic connection. The script sends no credentials to external services.
+
+VALIDATION AND LIMIT
+The profile generation, input validation, file permissions and credential-file
+cleanup were checked locally. Actual Wi-Fi connection must be tested on your
+Pi. This environment cannot execute the Windows setup or use your Pi hardware.
+
+PRIMARY REFERENCES
+https://www.raspberrypi.com/news/cloud-init-on-raspberry-pi-os/
+https://networkmanager.dev/docs/api/latest/nm-settings-keyfile.html
+https://networkmanager.dev/docs/api/latest/settings-802-11-wireless-security.html

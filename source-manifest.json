@@ -1,0 +1,126 @@
+{
+  "prepared_on": "2026-11-03",
+  "note": "Recovered source files are unchanged. SHA-256 values verify exact bytes against the saved inputs. These are saved project versions, not a live backup of the Raspberry Pi.",
+  "files": [
+    {
+      "path": "pi/robot_web.py",
+      "source": "robot_web.py",
+      "sha256": "ee0e9cd4f70ab6fb9f34d4cde649c16c04dbf5968c9b6481e6e886654ead6299"
+    },
+    {
+      "path": "pi/robot_web_distance.py",
+      "source": "robot_web_distance.py",
+      "sha256": "cf4018f29835c0e617131d3cfdda25b8fe36cc28a0ac6005d1a171e004be1ef6"
+    },
+    {
+      "path": "pi/crack_inspector.py",
+      "source": "crack_inspector.py",
+      "sha256": "d0fbd318f144a8762fd7d5f15a7c5fdd3c13188c4d0a0c98e5d7c96c3e162f65"
+    },
+    {
+      "path": "pi/robot_autonomy.py",
+      "source": "robot-autonomy.zip",
+      "sha256": "f5ea1b629c419803a8172f62d5c728c768cfc59484c2100754e317878bad4268"
+    },
+    {
+      "path": "docs/original/autonomy-START_HERE.txt",
+      "source": "robot-autonomy.zip",
+      "sha256": "0505a3fbc021a8ef797ba53cb72086c72bc8753af3dee23ed5f0b7740a6df0f1"
+    },
+    {
+      "path": "pi/robot_control.py",
+      "source": "Robot_Starter_Code.zip",
+      "sha256": "8f3ddfa3928eb892ee8e149cb319275689d6dbd1a72488eb7e6ffa8e3b58c6f6"
+    },
+    {
+      "path": "firmware/esp32_camera/esp32_camera.ino",
+      "source": "Robot_Starter_Code.zip",
+      "sha256": "c01030f7a1e4066c5ef72e879960dfffccad8ce97aae7b88f0a1be7a55f82e07"
+    },
+    {
+      "path": "firmware/esp32_motor_test/esp32_motor_test.ino",
+      "source": "Robot_Starter_Code.zip",
+      "sha256": "d9cabfc63d285ff8244c4b72ee3cd17293741b27e61df6bbe7d9109f06fe91e2"
+    },
+    {
+      "path": "docs/original/starter-README.md",
+      "source": "Robot_Starter_Code.zip",
+      "sha256": "e04bf153546bc3000c2e7ef0ad273005abd214ac0868efc9b3ce6fabf2b4c5e8"
+    },
+    {
+      "path": "firmware/esp32_motor_ultrasonic/esp32_motor_ultrasonic.ino",
+      "source": "ESP32_Motor_Ultrasonic.zip",
+      "sha256": "14ca0a99c2baf23f2b93b775516d4840b5ffdb98734bd4a2de55b4a4289fa26e"
+    },
+    {
+      "path": "firmware/esp32_motor_ultrasonic/ESP32_HC_SR04_Wiring.png",
+      "source": "ESP32_Motor_Ultrasonic.zip",
+      "sha256": "cc3e06c8fe32e962e6ea6dc20379a9be93cdf718a7a1494a1b01585cbcc2a9a3"
+    },
+    {
+      "path": "firmware/esp32_motor_ultrasonic/READ_ME.txt",
+      "source": "ESP32_Motor_Ultrasonic.zip",
+      "sha256": "d5a86d57b76a0a4716bbc0374b0c2b0a97c93c903a01e25971bf36c07784069a"
+    },
+    {
+      "path": "support/pi-wifi-check/cmdline.txt",
+      "source": "pi-wifi-check.zip",
+      "sha256": "1a5896b53eb011be13e9080864f0f3c188dbaeb5dc9c887e0155acbc13f69a4f"
+    },
+    {
+      "path": "support/pi-wifi-check/README.txt",
+      "source": "pi-wifi-check.zip",
+      "sha256": "5872f0ac10c01ea3a33b1715e0166ac3ce3507d95adf29c6ebb720d0357499e8"
+    },
+    {
+      "path": "support/pi-wifi-check/robot-wifi-check.sh",
+      "source": "pi-wifi-check.zip",
+      "sha256": "678113a488cd7b609416972e7aa5e8f7452e14eb9c0bdcaf589cc52134549814"
+    },
+    {
+      "path": "support/pi-wifi-check/cmdline-original.txt",
+      "source": "pi-wifi-check.zip",
+      "sha256": "fc981e3f87a0cc4ae1c9e6d774d02bbbaf4c225b8cd3ff7d30194c837ee3517e"
+    },
+    {
+      "path": "support/pi-wifi-reconnect/README.txt",
+      "source": "pi-wifi-reconnect.zip",
+      "sha256": "6c7a6ceacf25a10180aa3196bdb1d76aab444fa7c967aefa6e4178c330dd553b"
+    },
+    {
+      "path": "support/pi-wifi-reconnect/robot-wifi-reconnect.py",
+      "source": "pi-wifi-reconnect.zip",
+      "sha256": "992ae12ab7642978a1a246d77644bf5bf5dfea511191902b31028a864b4f3884"
+    },
+    {
+      "path": "support/pi-wifi-reconnect/SETUP-IN-POWERSHELL.txt",
+      "source": "pi-wifi-reconnect.zip",
+      "sha256": "0a9da47f7484c97164f010dd971fefd6db5dc1e1c485a35c626fd6f0c25b0c90"
+    },
+    {
+      "path": "support/pi-wifi-repair/robot-wifi-repair.sh",
+      "source": "pi-wifi-repair.zip",
+      "sha256": "ce07db652e569d0ff69f09c1ed279db4cc2f0429d83d6c76b8ada5bd5b8a148c"
+    },
+    {
+      "path": "support/pi-wifi-repair/START.cmd",
+      "source": "pi-wifi-repair.zip",
+      "sha256": "b032eb91e98856b7f5a03ed9e5abae10b1c17860ba10928185dc7a43ff22a3fd"
+    },
+    {
+      "path": "support/pi-wifi-repair/install-profile.py",
+      "source": "pi-wifi-repair.zip",
+      "sha256": "7b3fae99001554f5c8cc80bd7bd609f69b023418fbbc8deff1dda97e56a15b6f"
+    },
+    {
+      "path": "support/pi-wifi-repair/READ-ME.txt",
+      "source": "pi-wifi-repair.zip",
+      "sha256": "d09dfb171d2161bab83d69882e50459ec5b4169c032931d1666688296fe06d8c"
+    },
+    {
+      "path": "support/pi-wifi-repair/setup.ps1",
+      "source": "pi-wifi-repair.zip",
+      "sha256": "a49978d19c281c55f82449b3995e93a52715db92566761207bd4612bf9ad4de3"
+    }
+  ]
+}
